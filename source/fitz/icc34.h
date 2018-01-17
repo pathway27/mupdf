@@ -199,14 +199,13 @@ typedef __int32_t       icInt32Number;
 typedef __int32_t       icInt64Number[2];
 
 #elif defined(__GNUC__) || defined(__unix__) || defined(__unix)
-
 #include <sys/types.h>
 
-#if defined(__sun) || defined(__hpux) || defined (__MINGW) || defined(__MINGW32__) || defined(HAVE_STDINT_H)
+#if defined(__sun) || defined(__hpux) || defined (__MINGW) || defined(__MINGW32__) || defined(HAVE_STDINT_H) || defined(__vita__)
 
-#if defined (__MINGW) || defined(__MINGW32__) || defined(HAVE_STDINT_H)
-#include <stdint.h>
-#endif
+  #if defined (__MINGW) || defined(__MINGW32__) || defined(HAVE_STDINT_H)
+    #include <stdint.h>
+  #endif
 
 typedef uint8_t   icUInt8Number;
 typedef uint16_t  icUInt16Number;

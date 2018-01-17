@@ -6,6 +6,8 @@
 
 #ifdef _WIN32
 #define timegm _mkgmtime
+#elif defined(__SWITCH__) || defined(__vita__)
+#define timegm mktime
 #endif
 
 #define isdigit(c) (c >= '0' && c <= '9')
@@ -200,7 +202,7 @@ pdf_string_from_annot_type(fz_context *ctx, enum pdf_annot_type type)
 	}
 }
 
-int
+enum pdf_annot_type
 pdf_annot_type_from_string(fz_context *ctx, const char *subtype)
 {
 	if (!strcmp("Text", subtype)) return PDF_ANNOT_TEXT;

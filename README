@@ -7,6 +7,33 @@ See the documentation in docs/index.html for an overview.
 
 Build instructions can be found in docs/building.html.
 
+git clone git@github.com:pathway27/mupdf.git --recursive
+
+VITA Notes
+
+make clean
+make -j8 generate
+# Running with jobs hangs on this, but you can run it twice!
+make OS=vita prefix=/usr/local/vitasdk/arm-vita-eabi HAVE_X11=no HAVE_GLUT=no
+install
+
+note: freetype is being built again (2.6) - use one from vitasdk (2.7)?
+
+SWITCH Notes
+
+PATH=$PATH:/opt/devkitpro/devkitA64/bin
+make OS=switch prefix=/opt/devkitpro/devkitA64/aarch64-none-elf HAVE_X11=no HAVE_GLUT=no
+
+Updating & Upgrading
+
+git remote add upstream git@github.com:ArtifexSoftware/mupdf.git
+git push origin --mirror
+
+git checkout 1.15.0-vg-console
+git rebase 1.17.0
+
+cd thirdparty/
+
 LICENSE
 
 MuPDF is Copyright (c) 2006-2020 Artifex Software, Inc.

@@ -8,14 +8,14 @@ make examples
 ./build/debug/example document.pdf 1 100 0 > page1.ppm
 
 To build from installed sources, and render the same document, run:
-gcc -I/usr/local/include -o example \
-	/usr/local/share/doc/mupdf/examples/example.c \
-	/usr/local/lib/libmupdf.a \
-	/usr/local/lib/libmupdfthird.a \
-	-lm
+arm-vita-eabi-gcc -o example docs/examples/example.c -L build/vita/release -lmupdf -lmupdfthird -lm -lpthread
+aarch64-none-elf-gcc -MMD -MP  -MF -g -Wall -O2 -ffunction-sections -march=armv8-a -mtune=cortex-a57 -mtp=soft -fPIE  -I/opt/devkitpro/libnx/include  -DSWITCH docs/examples/example.c -o example.o -l mupdf -l mupdfthird -lm -lc
+
 ./example document.pdf 1 100 0 > page1.ppm
 */
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <mupdf/fitz.h>
 
 #include <stdio.h>
@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 		fprintf(stderr, "\tPage numbering starts from one.\n");
 		fprintf(stderr, "\tZoom level is in percent (100 percent is 72 dpi).\n");
 		fprintf(stderr, "\tRotation is in degrees clockwise.\n");
-		return EXIT_FAILURE;
+		return 1;
 	}
 
 	input = argv[1];
@@ -52,7 +52,7 @@ int main(int argc, char **argv)
 	if (!ctx)
 	{
 		fprintf(stderr, "cannot create mupdf context\n");
-		return EXIT_FAILURE;
+		return 1;
 	}
 
 	/* Register the default file types to handle. */
@@ -62,7 +62,7 @@ int main(int argc, char **argv)
 	{
 		fprintf(stderr, "cannot register document handlers: %s\n", fz_caught_message(ctx));
 		fz_drop_context(ctx);
-		return EXIT_FAILURE;
+		return 1;
 	}
 
 	/* Open the document. */
@@ -72,7 +72,7 @@ int main(int argc, char **argv)
 	{
 		fprintf(stderr, "cannot open document: %s\n", fz_caught_message(ctx));
 		fz_drop_context(ctx);
-		return EXIT_FAILURE;
+		return 1;
 	}
 
 	/* Count the number of pages. */
@@ -83,7 +83,7 @@ int main(int argc, char **argv)
 		fprintf(stderr, "cannot count number of pages: %s\n", fz_caught_message(ctx));
 		fz_drop_document(ctx, doc);
 		fz_drop_context(ctx);
-		return EXIT_FAILURE;
+		return 1;
 	}
 
 	if (page_number < 0 || page_number >= page_count)
@@ -91,7 +91,7 @@ int main(int argc, char **argv)
 		fprintf(stderr, "page number out of range: %d (page count %d)\n", page_number + 1, page_count);
 		fz_drop_document(ctx, doc);
 		fz_drop_context(ctx);
-		return EXIT_FAILURE;
+		return 1;
 	}
 
 	/* Compute a transformation matrix for the zoom and rotation desired. */
@@ -107,7 +107,7 @@ int main(int argc, char **argv)
 		fprintf(stderr, "cannot render page: %s\n", fz_caught_message(ctx));
 		fz_drop_document(ctx, doc);
 		fz_drop_context(ctx);
-		return EXIT_FAILURE;
+		return 1;
 	}
 
 	/* Print image data in ascii PPM format. */
@@ -131,5 +131,5 @@ int main(int argc, char **argv)
 	fz_drop_pixmap(ctx, pix);
 	fz_drop_document(ctx, doc);
 	fz_drop_context(ctx);
-	return EXIT_SUCCESS;
+	return 0;
 }
