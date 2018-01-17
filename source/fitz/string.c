@@ -4,7 +4,10 @@
 #include <errno.h>
 #include <math.h>
 #include <float.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
+
 
 #ifndef PATH_MAX
 #define PATH_MAX 4096
@@ -152,6 +155,13 @@ char *fz_realpath(const char *path, char buf[PATH_MAX])
 		if (buf[i] == '\\')
 			buf[i] = '/';
 	return buf;
+}
+
+#elif defined(__vita__)
+
+char *fz_realpath(const char *path, char buf[PATH_MAX])
+{
+	return NULL;
 }
 
 #else

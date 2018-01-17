@@ -8,9 +8,9 @@ endif
 
 ifndef OUT
   ifeq ($(shared),yes)
-    OUT := build/shared-$(build)
+    OUT := build/$(OS)/shared-$(build)
   else
-    OUT := build/$(build)
+    OUT := build/$(OS)/$(build)
   endif
 endif
 
@@ -240,6 +240,7 @@ MUTOOL_SRC += source/tools/mudraw.c
 MUTOOL_SRC += source/tools/murun.c
 MUTOOL_SRC += source/tools/mutrace.c
 MUTOOL_SRC += source/tools/cmapdump.c
+ifeq "$(BUILD_TOOLS)" "yes"
 MUTOOL_SRC += $(sort $(wildcard source/tools/pdf*.c))
 MUTOOL_OBJ := $(MUTOOL_SRC:%.c=$(OUT)/%.o)
 MUTOOL_EXE := $(OUT)/mutool
@@ -252,6 +253,7 @@ MURASTER_EXE := $(OUT)/muraster
 $(MURASTER_EXE) : $(MURASTER_OBJ) $(MUPDF_LIB) $(THIRD_LIB) $(PKCS7_LIB) $(THREAD_LIB)
 	$(LINK_CMD) $(THIRD_LIBS) $(THREADING_LIBS) $(LIBCRYPTO_LIBS)
 TOOL_APPS += $(MURASTER_EXE)
+endif
 
 ifeq ($(HAVE_GLUT),yes)
   MUVIEW_GLUT_SRC += $(sort $(wildcard platform/gl/*.c))
@@ -367,7 +369,7 @@ install: libs apps
 	install -m 644 $(INSTALL_LIBS) $(DESTDIR)$(libdir)
 
 	install -d $(DESTDIR)$(bindir)
-	install -m 755 $(TOOL_APPS) $(VIEW_APPS) $(DESTDIR)$(bindir)
+	#install -m 755 $(TOOL_APPS) $(VIEW_APPS) $(DESTDIR)$(bindir)
 
 	install -d $(DESTDIR)$(mandir)/man1
 	install -m 644 docs/man/*.1 $(DESTDIR)$(mandir)/man1
